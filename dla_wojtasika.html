@@ -187,6 +187,49 @@
           opacity: 0;
         }
       }
+      /* Bio Scanner Styles */
+      #bio-scanner {
+        width: 250px;
+        height: 250px;
+        margin: 20px auto;
+        border: 3px solid var(--accent-glow);
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+        display: none; /* Hidden until button click */
+        box-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
+      }
+
+      #webcam {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* This makes him look like a green matrix hologram! */
+        filter: grayscale(100%) sepia(100%) hue-rotate(90deg) brightness(0.8)
+          contrast(1.5);
+        transform: scaleX(-1); /* Mirrors the camera so it acts like a mirror */
+      }
+
+      /* The scanning laser beam */
+      .scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: rgba(102, 252, 241, 0.7);
+        box-shadow: 0 0 10px rgba(102, 252, 241, 1);
+        animation: scan 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes scan {
+        0% {
+          top: 0%;
+        }
+        100% {
+          top: 98%;
+        }
+      }
     </style>
   </head>
   <body>
@@ -196,8 +239,27 @@
       <p>Zrobiłam zajebisty prezent dla <b>C I E B I E</b>.</p>
       <p>
         Ale zanim to zrobisz to musisz udowodnić, że na niego zasługujesz. Pokaż
-        jak dobrze mnie znasz <3
+        jak dobrze mnie znasz
       </p>
+      <!-- The Camera Box -->
+      <div id="bio-scanner">
+        <video id="webcam" autoplay playsinline></video>
+        <div class="scan-line"></div>
+      </div>
+
+      <p
+        id="bio-text"
+        style="
+          font-family: &quot;Courier Prime&quot;, monospace;
+          font-size: 0.9rem;
+          font-weight: bold;
+          height: 40px;
+        "
+      ></p>
+      <button id="scan-btn" class="btn" onclick="runBioScan()">
+        KLIKNIJ ABY ZOBACZYĆ COŚ PIĘKNEGO
+      </button>
+
       <button class="btn" onclick="nextScreen('intro', 'trial1')">
         WCHODZE W TO JAK W OŚMIOLATKE
       </button>
@@ -237,9 +299,8 @@
         liczba czterocyfrowa.
       </p>
       <p style="font-style: italic">
-        "Weź miesiąc od którego jesteśmy razem, dodaj do tego miesiąc moich
-        narodzin, dodaj do tego rok twoich narodzin, dodaj IQ Marcwela, podziel
-        przez mój bodycount i masz wynik!"
+        "PIN znajduje się gdzieś w tym domu. ;) Albo może gdzieś u twojej
+        dziewczyny? Możesz spróbować ją rozebrać :)"
       </p>
 
       <input type="number" id="vault-pin" placeholder="_ _ _ _" />
@@ -306,6 +367,56 @@
     </div>
 
     <script>
+      let camStream = null; // We need to store the camera to turn it OFF later
+
+      async function runBioScan() {
+        // Hide scan button, show scanner container
+        document.getElementById("scan-btn").style.display = "none";
+        document.getElementById("bio-scanner").style.display = "block";
+        const scanText = document.getElementById("bio-text");
+        const nextBtn = document.getElementById("proceed-btn");
+
+        scanText.style.color = "#66fcf1";
+        scanText.innerText = "[PROSZĘ WŁĄCZYĆ KAMERĘ...]";
+
+        try {
+          // This is the Magic Web API that accesses the phone/laptop front camera
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "user" }, // Forces front camera on phones!
+          });
+
+          camStream = stream; // Save stream to turn off later
+          document.getElementById("webcam").srcObject = stream;
+
+          scanText.innerText = "[ACQUIRING VISUALS... DO NOT BLINK.]";
+
+          // After 2.5 seconds of "Scanning", deliver the punchline!
+          setTimeout(() => {
+            scanText.style.color = "#ff2a6d";
+            scanText.innerHTML =
+              "[ZWERYFIKOWANO.<br>OTO NAJPIĘKNIEJSZA CIPECZKA NA ŚWIECIE.]";
+
+            // Show the next button
+            nextBtn.style.display = "inline-block";
+          }, 2500);
+        } catch (err) {
+          // IF HE HITS "DENY", DO A BACKUP MESSAGE SO IT DOESN'T BREAK:
+          console.error("girl masz jakiś problem?", err);
+          scanText.style.color = "#ffaa00";
+          scanText.innerHTML = "[NO TO CHUJ...]";
+          nextBtn.style.display = "inline-block";
+        }
+      }
+
+      // Custom function to proceed to trials AND turn off the camera
+      function startTrials() {
+        // 1. Turn off the webcam green light so it doesn't stay on all game
+        if (camStream) {
+          camStream.getTracks().forEach((track) => track.stop());
+        }
+        // 2. Go to the next screen (make sure you still have your nextScreen function!)
+        nextScreen("intro", "trial1");
+      }
       // --- CUSTOMIZATION CONFIGURATION (CHANGE THESE!!) --- //
 
       // Trial 1: Quiz Answers (MAKE THEM ALL LOWERCASE!)
@@ -313,12 +424,9 @@
       const ans2 = "ja"; // Answer 2
       const ans3 = "oczy"; // Answer 3
 
-      // Trial 2: Memory Match Emojis
-      // Put emojis that represent your dates! (e.g. 🍕 for pizza dates, 🎮 for games)
       const emojiSet = ["🇮🇱", "🏫", "🎮", "🏞️", "🛒", "💍", "🍷", "👱"];
-
       // Trial 3: Final 4 Digit PIN
-      const vaultPIN = "1012";
+      const vaultPIN = "6767";
 
       // ---------------------------------------------------- //
 
@@ -327,6 +435,7 @@
         document.getElementById(currentId).classList.remove("active");
         document.getElementById(nextId).classList.add("active");
         if (nextId === "trial2") startMemoryGame();
+        document.getElementById("suspense").play();
       }
 
       // Check Trivia Answers
@@ -439,4 +548,17 @@
       }
     </script>
   </body>
+  <audio id="suspense" loop>
+    <source
+      src="https://raw.githubusercontent.com/anars/blank-audio/master/500-milliseconds-of-silence.mp3"
+      type="audio/mpeg"
+    />
+  </audio>
+  <!-- Replace with suspense music link -->
+  <audio id="lovesong">
+    <source
+      src="https://www.youtube.com/watch?v=vHSNZK4Je-Y"
+      type="audio/mpeg"
+    />
+  </audio>
 </html>
