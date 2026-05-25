@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prezent dla mojego małego Netanyahu🔒</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Courier+Prime&family=Montserrat:wght@400;700;900&display=swap");
+
+      :root {
+        --bg-color: #0b0c10;
+        --accent-glow: #66fcf1;
+        --text-main: #c5c6c7;
+        --love-color: #ff2a6d;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg-color);
+        color: var(--text-main);
+        font-family: "Montserrat", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .screen {
+        display: none;
+        width: 90%;
+        max-width: 600px;
+        background: rgba(20, 22, 28, 0.95);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(102, 252, 241, 0.1);
+        text-align: center;
+        animation: fadeIn 1s;
+      }
+
+      .active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-family: "Courier Prime", monospace;
+        color: var(--accent-glow);
+        margin-bottom: 5px;
+      }
+      h1.finale-title {
+        font-family: "Montserrat";
+        font-weight: 900;
+        color: var(--love-color);
+        text-transform: uppercase;
+        font-size: 2.5rem;
+        text-shadow: 0 0 20px rgba(255, 42, 109, 0.5);
+      }
+      p {
+        line-height: 1.6;
+        font-size: 1.1rem;
+      }
+
+      input {
+        width: 80%;
+        padding: 15px;
+        margin: 10px 0;
+        border: none;
+        border-bottom: 2px solid var(--accent-glow);
+        background: transparent;
+        color: white;
+        font-family: "Courier Prime", monospace;
+        font-size: 1.2rem;
+        text-align: center;
+        outline: none;
+        transition: 0.3s;
+      }
+      input:focus {
+        border-bottom: 2px solid var(--love-color);
+        box-shadow: 0 10px 10px -10px var(--love-color);
+      }
+
+      .btn {
+        background: transparent;
+        border: 2px solid var(--accent-glow);
+        color: var(--accent-glow);
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-family: "Courier Prime", monospace;
+        transition: 0.3s;
+      }
+      .btn:hover {
+        background: var(--accent-glow);
+        color: var(--bg-color);
+        box-shadow: 0 0 15px var(--accent-glow);
+      }
+
+      .btn-love {
+        border: 2px solid var(--love-color);
+        color: var(--love-color);
+        font-weight: bold;
+        border-radius: 50px;
+        font-family: "Montserrat", sans-serif;
+        margin-top: 30px;
+      }
+      .btn-love:hover {
+        background: var(--love-color);
+        color: white;
+        box-shadow: 0 0 20px var(--love-color);
+      }
+
+      .error {
+        color: var(--love-color);
+        height: 20px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+      }
+
+      /* Match Game Grid */
+      .memory-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .memory-card {
+        aspect-ratio: 1 / 1;
+        background: #1f2833;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 1px solid #45a29e;
+      }
+      .memory-card.flipped {
+        background: var(--text-main);
+        transform: rotateY(180deg);
+      }
+      .memory-card.matched {
+        background: var(--accent-glow);
+        cursor: default;
+      }
+
+      /* The Letter */
+      .letter {
+        text-align: left;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 40px;
+        color: #fff;
+        display: none;
+        border-left: 3px solid var(--love-color);
+        padding-left: 20px;
+      }
+
+      /* Floating Hearts at end */
+      .heart {
+        position: absolute;
+        font-size: 1.5rem;
+        color: var(--love-color);
+        animation: floatUp 4s ease-in forwards;
+        pointer-events: none;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100vh) scale(2);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- STAGE 0: Intro -->
+    <div id="intro" class="screen active">
+      <h1>Siema żydowska cipo</h1>
+      <p>Zrobiłam zajebisty prezent dla <b>C I E B I E</b>.</p>
+      <p>
+        Ale zanim to zrobisz to musisz udowodnić, że na niego zasługujesz. Pokaż
+        jak dobrze mnie znasz <3
+      </p>
+      <button class="btn" onclick="nextScreen('intro', 'trial1')">
+        WCHODZE W TO JAK W OŚMIOLATKE
+      </button>
+    </div>
+
+    <div id="trial1" class="screen">
+      <h1>Test 1: Czy masz amnezje?</h1>
+      <p>Odpowiedz na pytania</p>
+
+      <p>1. Gdzie było nasze pierwsze dłuższe spotkanie?</p>
+      <input type="text" id="q1" placeholder="Wpisz odpowiedź..." />
+
+      <p>2. Kto pierwszy powiedział "Kocham cię"?</p>
+      <input type="text" id="q2" placeholder="Ja / ty" />
+
+      <p>3. Co najbardziej w tobie lubię (podpowiedź: to nie jest kutas)</p>
+      <input type="text" id="q3" placeholder="Wpisz odpowiedź..." />
+
+      <button class="btn" onclick="checkTrivia()">WYŚLIJ</button>
+      <p id="error1" class="error"></p>
+    </div>
+
+    <div id="trial2" class="screen">
+      <h1>Test 2: ćwiczymy pamięć krótkotrwałą</h1>
+      <p>
+        Każda emotka w tym memory reprezentuje część naszego contenciku.
+        Najpierw zrób memory a potem się zastanów co jest do czego. :)
+      </p>
+      <div class="memory-grid" id="grid"></div>
+    </div>
+
+    <!-- STAGE 3: The Safe Code -->
+    <div id="trial3" class="screen">
+      <h1>Test 3: Pliki Epsteina</h1>
+      <p>
+        Ostatnie zadanko wymaga od ciebie znajomości matematyki. Odpowiedź to
+        liczba czterocyfrowa.
+      </p>
+      <p style="font-style: italic">
+        "Weź miesiąc od którego jesteśmy razem, dodaj do tego miesiąc moich
+        narodzin, dodaj do tego rok twoich narodzin, dodaj IQ Marcwela, podziel
+        przez mój bodycount i masz wynik!"
+      </p>
+
+      <input type="number" id="vault-pin" placeholder="_ _ _ _" />
+      <br />
+      <button class="btn" onclick="checkPin()">ODBLOKUJ PLIKI EPSTEINA</button>
+      <p id="error3" class="error"></p>
+    </div>
+
+    <!-- FINALE: The Emotional Climax -->
+    <div id="finale" class="screen" style="max-width: 800px; padding: 50px">
+      <h1 class="finale-title">PRZYZNANO DOSTĘP</h1>
+      <h2 style="color: #fff; margin-bottom: 30px">
+        Wszystkiego najlepszego kochanie!🎉
+      </h2>
+
+      <div id="final-letter" class="letter">
+        <p>
+          Nie wierzę, że takiemu debilowi jak ty się udało. Ale nawet jakby ci
+          się nie udało to i tak bym ci dała link do Githuba, żebyś zobaczył
+          wszystkie odpowiedzi. Nie chciałam ci robić kłopotów, tylko
+          przypomnieć ci prawie rok naszej przyjaźni i parę miesięcy związku.
+        </p>
+        <p>
+          Osiemnastka to poważna sprawa i to, że mogę uczestniczyć w tym etapie
+          twojego życia i patrzeć jak wyrosłeś na kochanego, inteligentnego i
+          przystojnego faceta jest największym przywilejem w moim życiu zaraz po
+          paszporcie izraelskim.
+        </p>
+        <p>
+          Wszystko co tu dałam jest ważnym elementem naszej relacji i dużą
+          częścią mnie.
+        </p>
+        <p>
+          Dlatego prezentem ode mnie jest coś niefizycznego. Jest to obietnica.
+        </p>
+        <p>
+          Obiecuję, że będę dla ciebie, nawet jak nadejdzie trudny czas. Będę
+          się śmiać ze wszystkich twoich żenujących żartów. Będę cię motywować
+          do sięgania wysoko i próbowania wszystkiego.
+        </p>
+        <p>
+          Bo nieważne ile będziesz miał lat, to zawsze będziesz moją bratnią
+          duszą.
+        </p>
+      </div>
+
+      <button class="btn btn-love" id="revealBtn" onclick="revealLetter()">
+        PRZECZYTAJ PLIKI EPSTEINA
+      </button>
+
+      <button
+        class="btn btn-love"
+        id="signBtn"
+        style="
+          display: none;
+          margin: auto;
+          background: var(--love-color);
+          color: white;
+        "
+        onclick="triggerMarryMeConfetti()"
+      >
+        PODPISZ CYROGRAF 📝
+      </button>
+    </div>
+
+    <script>
+      // --- CUSTOMIZATION CONFIGURATION (CHANGE THESE!!) --- //
+
+      // Trial 1: Quiz Answers (MAKE THEM ALL LOWERCASE!)
+      const ans1 = "cmentarz komunistyczny"; // Answer 1
+      const ans2 = "ja"; // Answer 2
+      const ans3 = "oczy"; // Answer 3
+
+      // Trial 2: Memory Match Emojis
+      // Put emojis that represent your dates! (e.g. 🍕 for pizza dates, 🎮 for games)
+      const emojiSet = ["🇮🇱", "🏫", "🎮", "🏞️", "🛒", "💍", "🍷", "👱"];
+
+      // Trial 3: Final 4 Digit PIN
+      const vaultPIN = "1012";
+
+      // ---------------------------------------------------- //
+
+      // Screen Navigation
+      function nextScreen(currentId, nextId) {
+        document.getElementById(currentId).classList.remove("active");
+        document.getElementById(nextId).classList.add("active");
+        if (nextId === "trial2") startMemoryGame();
+      }
+
+      // Check Trivia Answers
+      function checkTrivia() {
+        let q1 = document.getElementById("q1").value.toLowerCase().trim();
+        let q2 = document.getElementById("q2").value.toLowerCase().trim();
+        let q3 = document.getElementById("q3").value.toLowerCase().trim();
+        let error = document.getElementById("error1");
+
+        // Super basic matching, checks if their answer 'includes' the required words
+        if (q1.includes(ans1) && q2.includes(ans2) && q3.includes(ans3)) {
+          error.innerText = "Tożsamość żyda zweryfikowana... Lecimy dalej";
+          error.style.color = "#66fcf1";
+          setTimeout(() => nextScreen("trial1", "trial2"), 1000);
+        } else {
+          error.innerText = "GIRL WTF. Posrało cię chyba";
+        }
+      }
+
+      // Memory Match Game Logic
+      let cards = [...emojiSet, ...emojiSet].sort(() => Math.random() - 0.5);
+      let flippedCards = [];
+      let matches = 0;
+
+      function startMemoryGame() {
+        const grid = document.getElementById("grid");
+        grid.innerHTML = "";
+        matches = 0;
+
+        cards.forEach((emoji, index) => {
+          let card = document.createElement("div");
+          card.className = "memory-card";
+          card.dataset.val = emoji;
+          card.dataset.index = index;
+          card.innerText = "❔";
+          card.onclick = () => flipCard(card);
+          grid.appendChild(card);
+        });
+      }
+
+      function flipCard(card) {
+        if (flippedCards.length < 2 && !card.classList.contains("flipped")) {
+          card.classList.add("flipped");
+          card.innerText = card.dataset.val;
+          flippedCards.push(card);
+
+          if (flippedCards.length === 2) {
+            setTimeout(checkMatch, 800);
+          }
+        }
+      }
+
+      function checkMatch() {
+        if (flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
+          flippedCards.forEach((c) => c.classList.add("matched"));
+          matches += 2;
+          if (matches === cards.length) {
+            setTimeout(() => nextScreen("trial2", "trial3"), 1500);
+          }
+        } else {
+          flippedCards.forEach((c) => {
+            c.classList.remove("flipped");
+            c.innerText = "❔";
+          });
+        }
+        flippedCards = [];
+      }
+
+      // Vault Logic
+      function checkPin() {
+        if (document.getElementById("vault-pin").value === vaultPIN) {
+          document.getElementById("error3").innerText = "Odblokowano";
+          document.getElementById("error3").style.color = "#66fcf1";
+          setTimeout(() => nextScreen("trial3", "finale"), 1000);
+        } else {
+          document.getElementById("error3").innerText = "XD MOCNE";
+        }
+      }
+
+      // Finale Logic
+      function revealLetter() {
+        document.getElementById("revealBtn").style.display = "none";
+        document.getElementById("final-letter").style.display = "block";
+
+        // Bring out the contract button a little later for dramatic effect
+        setTimeout(() => {
+          document.getElementById("signBtn").style.display = "block";
+        }, 3000);
+      }
+
+      // Marry Me Emotion Heart Explosion
+      function triggerMarryMeConfetti() {
+        let btn = document.getElementById("signBtn");
+        btn.innerText = "Gratulacje, zostaliśmy małżeństwem💍";
+        btn.style.transform = "scale(1.1)";
+
+        // Generate exploding hearts everywhere!
+        for (let i = 0; i < 50; i++) {
+          let heart = document.createElement("div");
+          heart.innerHTML = "❤️";
+          heart.className = "heart";
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.top = Math.random() * 100 + "vh";
+          heart.style.animationDuration = Math.random() * 2 + 2 + "s";
+          document.body.appendChild(heart);
+
+          // Cleanup hearts
+          setTimeout(() => heart.remove(), 4000);
+        }
+      }
+    </script>
+  </body>
+</html>
